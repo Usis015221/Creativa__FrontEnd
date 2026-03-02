@@ -6,7 +6,8 @@ import ViewAssignmentsDesigner from './layouts/ViewAssignmentsDesigner/ViewAssig
 import CampaignWorkspace from './layouts/CampaignWorkspace/CampaignWorkspace.jsx';
 import ChatPage from './pages/ChatPage';
 import Login from './components/Login/login.jsx';
-import RecoverAccount from './pages/RecoverAccount.jsx';
+import RecoverAccount from './pages/RecoverAccount.jsx'
+import ResetPassword from './pages/ResetPassword.jsx';
 import './App.css'
 import { AuthProvider } from "./context/AuthContext.jsx"
 import PrivateRoute from './components/Guards/PrivateRoute.jsx';
@@ -45,11 +46,18 @@ const AnimatedRoutes = () => {
             </PageTransition>
           } />
           <Route path="/recover" element={
-            <PageTransition>
+            <PageTransition className="public-page">
               <RecoverAccount />
             </PageTransition>
           } />
         </Route>
+
+        {/* Ruta libre — accesible con o sin sesión activa */}
+        <Route path="/reset-password" element={
+          <PageTransition className="public-page">
+            <ResetPassword />
+          </PageTransition>
+        } />
       
         {/* Protected Routes */}
         <Route element={<PrivateRoute />}>
@@ -57,13 +65,13 @@ const AnimatedRoutes = () => {
           {/* Admin Routes */}
           <Route element={<RoleRoute allowedRoles={['admin', 'marketing']} />}>
             <Route path="/admin" element={
-              <PageTransition>
+              <PageTransition className="admin-page">
                 <Navbar role='Admin' />
                 <AdminPanel />
               </PageTransition>
             } />
             <Route path="/requests" element={
-              <PageTransition>
+              <PageTransition className="admin-page">
                 <Navbar role='Admin' />
                 <RequestsMailbox />
               </PageTransition>

@@ -2,38 +2,66 @@ import React, { useEffect, useState } from 'react';
 import './RepositoryView.css';
 import { Check, Maximize, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import LoadingSpinner from '../animations/LoadingSpinner';
+import { searchAssets } from '../../services/assetService';
 
-function RepositoryView({ campaignData, selectedIds, toggleSelection, assets = [], loading = false }) {
+function RepositoryView({ campaignData, campaignId, selectedIds, toggleSelection, assets = [], loading = false }) {
     const [activeImageIndex, setActiveImageIndex] = useState(null);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [searchResults, setSearchResults] = useState(null); // null = sin búsqueda activa
+    const [isSearching, setIsSearching] = useState(false);
     const timerRef = React.useRef(null);
 
-    // Unified Sorting Logic
+    // Sorted base list
     const sortedAssets = React.useMemo(() => {
         return [...assets].sort((a, b) => {
-            // 1. Try Date
             const dateA = a.created_at || a.createdAt || a.date;
             const dateB = b.created_at || b.createdAt || b.date;
             if (dateA && dateB) return new Date(dateB) - new Date(dateA);
 
-            // 2. Try Numeric ID
             const idA = Number(a.id);
             const idB = Number(b.id);
             if (!isNaN(idA) && !isNaN(idB)) return idB - idA;
 
-            // 3. Fallback String ID
             return String(b.id).localeCompare(String(a.id), undefined, { numeric: true });
         });
     }, [assets]);
 
-    // Navigation Handlers (Updated to use sortedAssets)
+    // Búsqueda vectorial con debounce de 500ms
+    useEffect(() => {
+        if (!searchTerm.trim()) {
+            setSearchResults(null);
+            return;
+        }
+        if (!campaignId) return;
+
+        const timer = setTimeout(async () => {
+            setIsSearching(true);
+            try {
+                const results = await searchAssets(searchTerm, campaignId);
+                setSearchResults(results);
+            } catch (err) {
+                console.error('[RepositoryView] Error en búsqueda vectorial:', err);
+                setSearchResults([]);
+            } finally {
+                setIsSearching(false);
+            }
+        }, 500);
+
+        return () => clearTimeout(timer);
+    }, [searchTerm, campaignId]);
+
+    // Assets a mostrar: resultados de búsqueda o lista completa
+    const displayedAssets = searchResults !== null ? searchResults : sortedAssets;
+
+    // Navigation Handlers
     const handleNext = (e) => {
         e?.stopPropagation();
-        setActiveImageIndex((prev) => (prev + 1) % sortedAssets.length);
+        setActiveImageIndex((prev) => (prev + 1) % displayedAssets.length);
     };
 
     const handlePrev = (e) => {
         e?.stopPropagation();
-        setActiveImageIndex((prev) => (prev - 1 + sortedAssets.length) % sortedAssets.length);
+        setActiveImageIndex((prev) => (prev - 1 + displayedAssets.length) % displayedAssets.length);
     };
 
     // Keyboard Navigation
@@ -47,7 +75,7 @@ function RepositoryView({ campaignData, selectedIds, toggleSelection, assets = [
             window.addEventListener('keydown', handleKeyDown);
             return () => window.removeEventListener('keydown', handleKeyDown);
         }
-    }, [activeImageIndex, sortedAssets.length]); // Depend on sortedAssets.length
+    }, [activeImageIndex, displayedAssets.length]);
 
     const handleExpandClick = (e, index) => {
         e.stopPropagation();
@@ -89,7 +117,7 @@ function RepositoryView({ campaignData, selectedIds, toggleSelection, assets = [
                         <h3 className='cw-panel-title'>
                             Repositorio de Imágenes
                             <span style={{ fontSize: '0.8em', color: 'var(--color-text-muted)', marginLeft: '8px' }}>
-                                ({assets.length})
+                                ({searchResults !== null ? `${displayedAssets.length} de ${assets.length}` : assets.length})
                             </span>
                         </h3>
                     </div>
@@ -99,6 +127,8 @@ function RepositoryView({ campaignData, selectedIds, toggleSelection, assets = [
                             type="text"
                             placeholder="Buscar recursos..."
                             className='cw-search-bar'
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
                         />
                         <div className='cw-tags'>
                             {campaignData.tags.map((tag, index) => (
@@ -108,13 +138,12 @@ function RepositoryView({ campaignData, selectedIds, toggleSelection, assets = [
                     </div>
 
                     <div className='cw-image-grid'>
-                        {loading ? (
+                        {loading || isSearching ? (
                             <div className="cw-loading">
-                                <LoadingSpinner text="Cargando recursos..." size={30} />
+                                <LoadingSpinner text={isSearching ? "Buscando..." : "Cargando recursos..."} size={30} />
                             </div>
-                        ) : sortedAssets.length > 0 ? (
-                            // Robust Sort: Newest First
-                            sortedAssets.map((asset, index) => {
+                        ) : displayedAssets.length > 0 ? (
+                            displayedAssets.map((asset, index) => {
                                 const { img_url } = asset
                                 const isSelected = selectedIds.includes(asset.id);
                                 return (
@@ -167,7 +196,9 @@ function RepositoryView({ campaignData, selectedIds, toggleSelection, assets = [
                                 );
                             })
                         ) : (
-                            <div className="cw-empty">No hay imágenes en este repositorio.</div>
+                            <div className="cw-empty">
+                                {searchResults !== null ? `Sin resultados para "${searchTerm}"` : 'No hay imágenes en este repositorio.'}
+                            </div>
                         )}
                     </div>
                 </div>
@@ -230,7 +261,7 @@ function RepositoryView({ campaignData, selectedIds, toggleSelection, assets = [
             </section>
 
             {/* Modal Preview with Navigation */}
-            {activeImageIndex !== null && sortedAssets[activeImageIndex] && (
+            {activeImageIndex !== null && displayedAssets[activeImageIndex] && (
                 <div className="rv-modal-overlay" onClick={() => setActiveImageIndex(null)}>
                     <div className="rv-modal-content" onClick={(e) => e.stopPropagation()}>
                         <button className="rv-modal-close" onClick={() => setActiveImageIndex(null)} aria-label="Cerrar">
@@ -242,7 +273,7 @@ function RepositoryView({ campaignData, selectedIds, toggleSelection, assets = [
                         </button>
 
                         <img
-                            src={(typeof sortedAssets[activeImageIndex].img_url === 'string' ? sortedAssets[activeImageIndex].img_url : sortedAssets[activeImageIndex].img_url?.url) || sortedAssets[activeImageIndex].thumbnail_url || sortedAssets[activeImageIndex].img_url?.thumbnail}
+                            src={(typeof displayedAssets[activeImageIndex].img_url === 'string' ? displayedAssets[activeImageIndex].img_url : displayedAssets[activeImageIndex].img_url?.original) || displayedAssets[activeImageIndex].thumbnail_url || displayedAssets[activeImageIndex].img_url?.thumbnail}
                             alt="Preview"
                         />
 

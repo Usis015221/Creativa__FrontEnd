@@ -103,6 +103,7 @@ const CampaignWorkspace = () => {
                 {activeTab === 'Repositorio' && (
                     <RepositoryView
                         campaignData={campaignData}
+                        campaignId={campaign?.id}
                         selectedIds={selectedIds}
                         toggleSelection={toggleSelection}
                         assets={assets}

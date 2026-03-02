@@ -89,6 +89,20 @@ export const updateAssetSaveStatus = async (assetId, isSaved) => {
   return response.data.data || { id: assetId, is_saved: isSaved };
 };
 
+/**
+ * Semantic vector search for assets within a campaign.
+ * @param {string} query
+ * @param {string} campaignId
+ * @returns {Promise<Array>}
+ */
+export const searchAssets = async (query, campaignId) => {
+  const response = await api.get(
+    `/assets/search?query=${encodeURIComponent(query)}&campaign_id=${campaignId}`
+  );
+  if (response.data?.success) return response.data.data;
+  return [];
+};
+
 // ─── Utilities ───────────────────────────────────────────────────────
 
 /**

@@ -4,7 +4,8 @@ import { Check, X, Calendar } from 'lucide-react';
 import FadeIn from '../../components/animations/FadeIn';
 import ScalePress from '../../components/animations/ScalePress';
 import toast from 'react-hot-toast';
-import { getRequests, updateRequestStatus } from '../../services/adminService';
+import { getRequests, updateRequestStatus, sendResetLink } from '../../services/adminService';
+import { Mail } from 'lucide-react';
 
 const TYPE_LABELS = {
   password: 'Olvidó contraseña',
@@ -18,12 +19,18 @@ const STATUS_LABELS = {
   rejected: 'Rechazada',
 };
 
+const ROLE_LABELS = {
+  marketing: 'Marketing',
+  designer: 'Diseñador',
+};
+
 const RequestsMailbox = () => {
   const [requests, setRequests] = useState([]);
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [adminNotes, setAdminNotes] = useState('');
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
 
   useEffect(() => {
     fetchRequests();
@@ -62,12 +69,26 @@ const RequestsMailbox = () => {
     }
   };
 
-  const filteredRequests = requests.filter((r) =>
-    !searchTerm ||
-    r.firstName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    r.lastName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    r.userEmail?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const handleSendResetLink = async () => {
+    if (!selectedRequest) return;
+    try {
+      await sendResetLink(selectedRequest.id);
+      toast.success('Link de recuperación enviado al correo del usuario');
+      fetchRequests();
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Error al enviar el link');
+    }
+  };
+
+  const filteredRequests = requests.filter((r) => {
+    const matchesSearch =
+      !searchTerm ||
+      r.firstName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      r.lastName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      r.userEmail?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus = !statusFilter || r.status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
 
   const formatDate = (dateStr) => dateStr ? dateStr.slice(0, 10) : '';
 
@@ -91,10 +112,34 @@ const RequestsMailbox = () => {
               />
             </div>
 
+            <div className="list-filter">
+              <select
+                className="status-filter"
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+              >
+                <option value="">Todos los estados</option>
+                <option value="pending">Pendientes</option>
+                <option value="accepted">Aceptadas</option>
+                <option value="rejected">Rechazadas</option>
+              </select>
+            </div>
+
             {loading ? (
-              <p style={{ padding: '1rem', textAlign: 'center' }}>Cargando...</p>
+              <ul>
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <li key={`skel-${i}`} className="request-item skeleton-item">
+                    <span className="skeleton-box skeleton-dot" />
+                    <div className="meta">
+                      <span className="skeleton-box skeleton-name-line" />
+                      <span className="skeleton-box skeleton-type-line" />
+                    </div>
+                    <span className="skeleton-box skeleton-date-line" />
+                  </li>
+                ))}
+              </ul>
             ) : filteredRequests.length === 0 ? (
-              <p style={{ padding: '1rem', textAlign: 'center' }}>No hay solicitudes</p>
+              <p>No hay solicitudes</p>
             ) : (
               <ul>
                 {filteredRequests.map((request) => (
@@ -103,6 +148,7 @@ const RequestsMailbox = () => {
                     className={`request-item${selectedRequest?.id === request.id ? ' selected' : ''}`}
                     onClick={() => handleSelectRequest(request)}
                   >
+                    <span className={`status-dot ${request.status}`} title={STATUS_LABELS[request.status]} />
                     <div className="meta">
                       <span className="name">{request.firstName} {request.lastName}</span>
                       <span className="type">{TYPE_LABELS[request.requestType] || request.requestType}</span>
@@ -131,11 +177,20 @@ const RequestsMailbox = () => {
                   </div>
                   {selectedRequest.status === 'pending' && (
                     <div className="detail-actions">
-                      <ScalePress>
-                        <button className="accept-btn" onClick={() => handleUpdateStatus('accepted')}>
-                          <Check size={16} /> Aceptar
-                        </button>
-                      </ScalePress>
+                      {(selectedRequest.requestType === 'password' || selectedRequest.requestType === 'both') && (
+                        <ScalePress>
+                          <button className="reset-btn" onClick={handleSendResetLink}>
+                            <Mail size={16} /> Enviar link
+                          </button>
+                        </ScalePress>
+                      )}
+                      {selectedRequest.requestType === 'email' && (
+                        <ScalePress>
+                          <button className="accept-btn" onClick={() => handleUpdateStatus('accepted')}>
+                            <Check size={16} /> Aceptar
+                          </button>
+                        </ScalePress>
+                      )}
                       <ScalePress>
                         <button className="reject-btn" onClick={() => handleUpdateStatus('rejected')}>
                           <X size={16} /> Rechazar
@@ -151,14 +206,35 @@ const RequestsMailbox = () => {
                 </div>
 
                 <div className="detail-body">
-                  <p><strong>Tipo:</strong> {TYPE_LABELS[selectedRequest.requestType] || selectedRequest.requestType}</p>
-                  <p><strong>Email:</strong> {selectedRequest.userEmail}</p>
-                  <p><strong>Rol:</strong> {selectedRequest.role}</p>
+                  <div className="detail-fields">
+                    <div className="detail-field">
+                      <span className="field-label">Tipo</span>
+                      <span className="field-value">{TYPE_LABELS[selectedRequest.requestType] || selectedRequest.requestType}</span>
+                    </div>
+                    <div className="detail-field">
+                      <span className="field-label">Cuenta</span>
+                      <span className="field-value">
+                        {selectedRequest.userEmail}
+                        {(selectedRequest.requestType === 'password' || selectedRequest.requestType === 'both') && (
+                          <span className="email-hint"> — el link se enviará aquí</span>
+                        )}
+                      </span>
+                    </div>
+                    <div className="detail-field">
+                      <span className="field-label">Rol</span>
+                      <span className="field-value">
+                        <span className={`rm-role-badge ${selectedRequest.role}`}>
+                          {ROLE_LABELS[selectedRequest.role] || selectedRequest.role}
+                        </span>
+                      </span>
+                    </div>
+                  </div>
+
                   {selectedRequest.message && (
-                    <>
-                      <p><strong>Mensaje:</strong></p>
+                    <div className="detail-field--stacked">
+                      <span className="field-label">Mensaje</span>
                       <p className="message">{selectedRequest.message}</p>
-                    </>
+                    </div>
                   )}
 
                   <div className="admin-note">
