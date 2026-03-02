@@ -25,5 +25,8 @@ export const getRequests = () =>
 export const updateRequestStatus = (id, status, adminNotes) =>
     api.patch(`/admin/requests/${id}`, { status, adminNotes });
 
+export const sendResetLink = (id) =>
+    api.post(`/admin/requests/${id}/send-reset`);
+
 export const createRequest = (data) =>
     api.post('/admin/requests', data);

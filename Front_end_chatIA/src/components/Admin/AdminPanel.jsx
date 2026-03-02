@@ -288,7 +288,7 @@ const AdminPanel = () => {
               </div>
 
               <div className="table-wrapper">
-                <table className="admin-table head-table" aria-hidden="true">
+                <table className="admin-table">
                   <thead>
                     <tr>
                       <th>Nombre</th>
@@ -298,11 +298,7 @@ const AdminPanel = () => {
                       <th className="actions-col">Acciones</th>
                     </tr>
                   </thead>
-                </table>
-
-                <div className="table-body-scroll">
-                  <table className="admin-table body-table">
-                    <tbody>
+                  <tbody>
                       {loading ? (
                         Array.from({ length: 5 }).map((_, i) => (
                           <tr key={`skel-${i}`} className="skeleton-row">
@@ -378,8 +374,7 @@ const AdminPanel = () => {
                         </AnimatePresence>
                       )}
                     </tbody>
-                  </table>
-                </div>
+                </table>
               </div>
             </div>
           </div>

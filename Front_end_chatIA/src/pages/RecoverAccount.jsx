@@ -106,7 +106,7 @@ const RecoverAccount = () => {
           </div>
 
           <div className="recover-row">
-            <label htmlFor="rec-email">Correo (para enviarte la confirmación de recuperación)</label>
+            <label htmlFor="rec-email">Correo electrónico de tu cuenta</label>
             <input
               id="rec-email"
               name="userEmail"

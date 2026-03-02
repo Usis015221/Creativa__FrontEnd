@@ -6,7 +6,9 @@ export const authLogin = async (email, password) => {
 }
 
 export const getAuthProfile = async () => {
-
     const response = await api.get(`/auth/profile`);
     return response;
 }
+
+export const resetPassword = (accessToken, newPassword) =>
+    api.post('/auth/reset-password', { accessToken, newPassword });
