@@ -2,6 +2,8 @@ import { api } from "./api";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 
+import { getImageUrl } from "../utils/imageUtils";
+
 // ─── Campaign Assets ─────────────────────────────────────────────────
 
 /**
@@ -112,7 +114,6 @@ export const searchAssets = async (query, campaignId) => {
  * @returns {Promise<Blob>}
  */
 export const downloadImagesAsZip = async (imageUrls, zipName = "assets") => {
-  const { getImageUrl } = await import("../utils/imageUtils");
   const zip = new JSZip();
   const folder = zip.folder("assets");
 
