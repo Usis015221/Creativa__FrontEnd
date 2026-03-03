@@ -1,11 +1,10 @@
-import axios from "axios";
+import { api } from "../src/services/api.js";
 
 export let campaigns = [];
 
 export const handleGetCampaigns = async () => {
   try {
-    // Apuntamos a la nueva ruta hexagonal
-    const response = await axios.get("http://localhost:3000/campaigns/all");
+    const response = await api.get("/campaigns/all");
     campaigns = response.data;
     return response.data;
   } catch (e) {
