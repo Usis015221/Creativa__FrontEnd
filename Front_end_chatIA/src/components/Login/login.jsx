@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './Login.css';
+import './login.css';
 import { useAuth } from '../../hooks/useAuth';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import Logo_CS from '../../assets/img/logo_CS.png';
