@@ -1,5 +1,5 @@
 import React from 'react';
-import Cards from '../Cards/cards.jsx';
+import Cards from '../Cards/Cards.jsx';
 import { FolderClosed } from 'lucide-react';
 import '../../layouts/ViewCampaignsMarketing/ViewCampaignsMarketing.css'; // Inherit styles
 
