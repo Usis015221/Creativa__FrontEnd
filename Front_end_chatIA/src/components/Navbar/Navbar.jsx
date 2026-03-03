@@ -33,7 +33,10 @@ function Navbar({ role = "Marketing", showAdminLinks = true }) {
     const rol = user?.role;
     //console.log("usuario en Navbar:", user.firstName);
     let nameUser = user?.firstName || "US";
-    nameUser = nameUser.substring(0, 2).toUpperCase();
+    let lastName = user?.lastName || " ";
+    nameUser = nameUser.substring(0, 1).toUpperCase();
+    lastName = lastName.substring(0, 1).toUpperCase();
+    let fullName = nameUser + lastName;
 
     const effectiveRole = (role || rol || '').toString().toLowerCase();
     let logoPath = '/';
@@ -68,7 +71,7 @@ function Navbar({ role = "Marketing", showAdminLinks = true }) {
 
                 <div className='user-menu-container' ref={menuRef}>
                     <div onClick={() => setShowMenu(!showMenu)}>
-                        <ImageUser Initials={nameUser} name="Userimg" nameContainer="imgUser" />
+                        <ImageUser Initials={fullName} name="Userimg" nameContainer="imgUser" />
                     </div>
 
                     {showMenu && (

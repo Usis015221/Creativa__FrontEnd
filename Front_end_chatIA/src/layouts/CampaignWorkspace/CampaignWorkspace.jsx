@@ -14,8 +14,10 @@ const CampaignWorkspace = () => {
     const userStr = localStorage.getItem('user');
     const user = userStr ? JSON.parse(userStr) : null;
     let nameUser = user?.firstName || "US";
-    nameUser = nameUser.substring(0, 2).toUpperCase();
-
+    let lastName = user?.lastName || " ";
+    nameUser = nameUser.substring(0, 1).toUpperCase();
+    lastName = lastName.substring(0, 1).toUpperCase();
+    let fullName = nameUser + lastName;
     const {
         // Data
         campaignData,
@@ -68,7 +70,7 @@ const CampaignWorkspace = () => {
             {/* Sidebar */}
             <aside className={`cw-sidebar ${isSidebarOpen ? 'open' : 'closed'}`}>
                 <div className='cw-profile'>
-                    <ImageUser Initials={nameUser} name="UserDesingerImg" nameContainer="imgUserDesinger" />
+                    <ImageUser Initials={fullName} name="UserDesingerImg" nameContainer="imgUserDesinger" />
                     <h3 className='cw-user-name'>{user.firstName + " " + user.lastName}</h3>
                 </div>
 
