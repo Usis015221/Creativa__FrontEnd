@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Logo_CS from '../../assets/img/Logo_CS.png';
-import { Bell, LogOut } from 'lucide-react';
+import { Bell, LogOut, Users } from 'lucide-react';
 import ImageUser from '../ImageUser/ImageUser';
 import './Navbar.css';
 import { Link, useNavigate } from 'react-router-dom';
