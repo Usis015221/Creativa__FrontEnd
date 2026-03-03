@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import Logo_CS from '../../assets/img/logo_CS.png';
+import Logo_CS from '../../assets/img/Logo_CS.png';
 import { Bell, LogOut } from 'lucide-react';
 import ImageUser from '../ImageUser/ImageUser';
 import './Navbar.css';
