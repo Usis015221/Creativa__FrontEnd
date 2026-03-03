@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import './AdminPanel.css';
-import { UserPlus, Edit2, Trash2, Lock, Unlock, Search, Filter, Shield, Mail, User, Users } from 'lucide-react';
+import { UserPlus, Edit2, Trash2, Lock, Unlock } from 'lucide-react';
 import FadeIn from '../../components/animations/FadeIn';
 import ScalePress from '../../components/animations/ScalePress';
 import ConfirmationModal from '../Modals/ConfirmationModal';
@@ -14,12 +14,6 @@ const initialFormData = {
   email: '',
   password: '',
   role: '',
-};
-
-const getInitials = (firstName, lastName) => {
-  const f = firstName ? firstName.charAt(0) : '';
-  const l = lastName ? lastName.charAt(0) : '';
-  return (f + l).toUpperCase() || 'U';
 };
 
 const AdminPanel = () => {
@@ -153,76 +147,60 @@ const AdminPanel = () => {
       <div className="admin-card">
         <div className="admin-header">
           <h2>Panel de Administración</h2>
-          <p>Gestiona los usuarios, roles y permisos de la plataforma Creativa.</p>
         </div>
 
         <div className="admin-content">
           {/* Panel izquierdo: formulario (campos verticales) */}
           <div className="left-panel">
             <form className={`admin-form ${isEditing ? 'editing' : ''}`} onSubmit={onSubmit}>
-              <div className="form-header-title">
-                <Shield size={18} />
-                <span>{isEditing ? 'Editar Usuario' : 'Nuevo Usuario'}</span>
-              </div>
-              
               {isEditing && (
                 <div className="edit-mode-banner">
                   Editando usuario
                 </div>
               )}
-              
               <div className="form-row">
                 <div className="input-group">
                   <label htmlFor="name">Nombre</label>
-                  <div className="input-with-icon">
-                    <User size={16} />
-                    <input
-                      id="name"
-                      name="firstName"
-                      type="text"
-                      placeholder="Nombre"
-                      value={formData.firstName}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </div>
+                  <input
+                    id="name"
+                    name="firstName"
+                    type="text"
+                    placeholder="Nombre"
+                    value={formData.firstName}
+                    onChange={handleInputChange}
+                    required
+                  />
                 </div>
               </div>
 
               <div className="form-row">
                 <div className="input-group">
                   <label htmlFor="lastname">Apellido</label>
-                  <div className="input-with-icon">
-                    <User size={16} />
-                    <input
-                      id="lastname"
-                      name="lastName"
-                      type="text"
-                      placeholder="Apellido"
-                      value={formData.lastName}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </div>
+                  <input
+                    id="lastname"
+                    name="lastName"
+                    type="text"
+                    placeholder="Apellido"
+                    value={formData.lastName}
+                    onChange={handleInputChange}
+                    required
+                  />
                 </div>
               </div>
 
               <div className="form-row">
                 <div className="input-group">
-                  <label htmlFor="email">Correo Electrónico</label>
-                  <div className="input-with-icon">
-                    <Mail size={16} />
-                    <input
-                      id="email"
-                      name="email"
-                      type="email"
-                      placeholder="usuario@ejemplo.com"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      required
-                      disabled={isEditing}
-                    />
-                  </div>
+                  <label htmlFor="email">Correo Electronico</label>
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    placeholder="usuario@ejemplo.com"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    required
+                    disabled={isEditing}
+                  />
                 </div>
               </div>
 
@@ -230,19 +208,16 @@ const AdminPanel = () => {
                 <div className="form-row">
                   <div className="input-group">
                     <label htmlFor="password">Contraseña</label>
-                    <div className="input-with-icon">
-                      <Lock size={16} />
-                      <input
-                        id="password"
-                        name="password"
-                        className="password-input"
-                        type="password"
-                        placeholder='••••••••'
-                        value={formData.password}
-                        onChange={handleInputChange}
-                        required
-                      />
-                    </div>
+                    <input
+                      id="password"
+                      name="password"
+                      className="password-input"
+                      type="password"
+                      placeholder='••••••••'
+                      value={formData.password}
+                      onChange={handleInputChange}
+                      required
+                    />
                   </div>
                 </div>
               )}
@@ -250,20 +225,17 @@ const AdminPanel = () => {
               <div className="form-row">
                 <div className="input-group">
                   <label htmlFor="role">Rol</label>
-                  <div className="input-with-icon">
-                    <Shield size={16} />
-                    <select
-                      id="role"
-                      name="role"
-                      value={formData.role}
-                      onChange={handleInputChange}
-                      required
-                    >
-                      <option value="" disabled>Selecciona un rol</option>
-                      <option value="marketing">Marketing</option>
-                      <option value="designer">Diseñador</option>
-                    </select>
-                  </div>
+                  <select
+                    id="role"
+                    name="role"
+                    value={formData.role}
+                    onChange={handleInputChange}
+                    required
+                  >
+                    <option value="" disabled>Selecciona un rol</option>
+                    <option value="marketing">Marketing</option>
+                    <option value="designer">Diseñador</option>
+                  </select>
                 </div>
               </div>
 
@@ -271,7 +243,7 @@ const AdminPanel = () => {
                 <ScalePress>
                   <div className="create-button-wrap">
                     <button type="submit" className="create-button">
-                      <UserPlus size={16} />
+                      <UserPlus size={16} style={{ marginRight: 8 }} />
                       {isEditing ? 'Guardar Cambios' : 'Crear Usuario'}
                     </button>
                   </div>
@@ -293,35 +265,25 @@ const AdminPanel = () => {
           <div className="right-panel">
             <div className="admin-table-section">
               <div className="table-header-row">
-                <div className="table-stats">
-                  <div className="stat-badge">
-                    <Users size={16} /> Usuarios: <span>{filteredUsers.length}</span>
-                  </div>
-                </div>
+                <h3>USUARIOS</h3>
                 <div className="user-controls">
-                  <div className="search-container">
-                    <Search size={16} />
-                    <input
-                      className="user-search"
-                      type="text"
-                      placeholder="Buscar usuario..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-                  </div>
-                  <div className="search-container">
-                    <Filter size={16} />
-                    <select
-                      className="role-filter"
-                      value={roleFilter}
-                      onChange={(e) => setRoleFilter(e.target.value)}
-                    >
-                      <option value="">Filtrar por rol</option>
-                      <option value="marketing">Marketing</option>
-                      <option value="designer">Diseñador</option>
-                      <option value="lock">Deshabilitados</option>
-                    </select>
-                  </div>
+                  <input
+                    className="user-search"
+                    type="text"
+                    placeholder="Buscar usuario..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                  <select
+                    className="role-filter"
+                    value={roleFilter}
+                    onChange={(e) => setRoleFilter(e.target.value)}
+                  >
+                    <option value="">Filtrar por rol</option>
+                    <option value="marketing">Marketing</option>
+                    <option value="designer">Diseñador</option>
+                    <option value="lock">Deshabilitados</option>
+                  </select>
                 </div>
               </div>
 
@@ -329,9 +291,10 @@ const AdminPanel = () => {
                 <table className="admin-table">
                   <thead>
                     <tr>
-                      <th>Usuario</th>
+                      <th>Nombre</th>
+                      <th>Apellido</th>
+                      <th>Correo Electronico</th>
                       <th>Rol</th>
-                      <th>Estado</th>
                       <th className="actions-col">Acciones</th>
                     </tr>
                   </thead>
@@ -339,17 +302,10 @@ const AdminPanel = () => {
                       {loading ? (
                         Array.from({ length: 5 }).map((_, i) => (
                           <tr key={`skel-${i}`} className="skeleton-row">
-                            <td>
-                              <div className="user-info-cell">
-                                <div className="skeleton-box skeleton-avatar" />
-                                <div>
-                                  <div className="skeleton-box skeleton-text" />
-                                  <div className="skeleton-box skeleton-email" />
-                                </div>
-                              </div>
-                            </td>
+                            <td><div className="skeleton-box skeleton-text" /></td>
+                            <td><div className="skeleton-box skeleton-text" /></td>
+                            <td><div className="skeleton-box skeleton-email" /></td>
                             <td><div className="skeleton-box skeleton-badge" /></td>
-                            <td><div className="skeleton-box skeleton-badge" style={{width: '70px'}} /></td>
                             <td className="actions-col">
                               <div className="skeleton-actions">
                                 <div className="skeleton-box skeleton-btn" />
@@ -361,12 +317,8 @@ const AdminPanel = () => {
                         ))
                       ) : filteredUsers.length === 0 ? (
                         <tr>
-                          <td colSpan="4">
-                            <div className="empty-state">
-                              <Users />
-                              <h4>No se encontraron usuarios</h4>
-                              <p>Ajusta los filtros de búsqueda o agrega un nuevo usuario.</p>
-                            </div>
+                          <td colSpan="5" style={{ textAlign: 'center', padding: '2rem' }}>
+                            No se encontraron usuarios
                           </td>
                         </tr>
                       ) : (
@@ -381,26 +333,12 @@ const AdminPanel = () => {
                               exit={{ opacity: 0, scale: 0.5, y: -10 }}
                               transition={{ duration: 0.25 }}
                             >
-                              <td>
-                                <div className="user-info-cell">
-                                  <div className="user-avatar">
-                                    {getInitials(user.firstName, user.lastName)}
-                                  </div>
-                                  <div className="user-details">
-                                    <span className="user-name">{user.firstName} {user.lastName}</span>
-                                    <span className="user-email">{user.email}</span>
-                                  </div>
-                                </div>
-                              </td>
+                              <td>{user.firstName}</td>
+                              <td>{user.lastName}</td>
+                              <td>{user.email}</td>
                               <td>
                                 <span className={`role-badge ${user.role}`}>
                                   {user.role === 'marketing' ? 'Marketing' : 'Diseñador'}
-                                </span>
-                              </td>
-                              <td>
-                                <span className={`status-badge ${user.isActive ? 'active' : 'inactive'}`}>
-                                  <span className="status-dot"></span>
-                                  {user.isActive ? 'Activo' : 'Inactivo'}
                                 </span>
                               </td>
                               <td className="actions-col">

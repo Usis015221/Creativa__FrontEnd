@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import toast from 'react-hot-toast';
-import { enhancePrompt, refineAsset, editImage } from '../../services/generatorService';
+import { refineAsset, editImage } from '../../services/generatorService';
 import { Sparkles, Image as ImageIcon, Wand2, Download, X, Edit3, Bookmark, Square, RectangleHorizontal, RectangleVertical, Lightbulb, Upload, ChevronLeft, ChevronRight, Palette, Maximize, Trash2, ChevronDown, ChevronUp, CheckCircle, AlertTriangle, Undo, RotateCcw, Settings, MoreVertical, Pencil } from 'lucide-react';
 import { getImageUrl, downloadImage } from '../../utils/imageUtils';
 import InpaintingCanvas from './InpaintingCanvas';
@@ -75,13 +75,20 @@ function GeneratorView({
     generationError = null,
     getRefinements = () => [],
     onDelete,
-    campaignId
+    campaignId,
+    suggestedPrompts = [],
+    suggestionsError = null,
+    aiRecommendedStyle = null,
+    loadingSuggestions = false,
+    onRefreshSuggestions,
+    wizardOpen = false,
+    onOpenWizard,
+    onCloseWizard,
 }) {
     // ===== STATE MANAGEMENT =====
     const [mode, setMode] = useState('create'); // 'create' | 'edit'
     const [editingImage, setEditingImage] = useState(null);
     const [editHistory, setEditHistory] = useState([]); // History of iterations for current editing image
-    const [isEnhancing, setIsEnhancing] = useState(false);
     const [isRefining, setIsRefining] = useState(false);
     const [isControlsOpen, setIsControlsOpen] = useState(true);
     const [showEditOverlay, setShowEditOverlay] = useState(false);
@@ -91,6 +98,7 @@ function GeneratorView({
     // Collapsible Sections State
     const [openSections, setOpenSections] = useState({
         prompt: true,
+        suggestions: true,
         params: true,
         refs: true
     });
@@ -291,23 +299,11 @@ function GeneratorView({
     };
 
     // ===== ACTION HANDLERS =====
-    const handleEnhanceClick = async () => {
-        if (!prompt || prompt.trim().length === 0) return;
-        setIsEnhancing(true);
-        try {
-            const enhancedText = await enhancePrompt(prompt);
-            setPrompt(enhancedText);
-        } catch (error) {
-            console.error(error);
-        } finally {
-            setIsEnhancing(false);
-        }
-    };
 
     // Style Pills Handler
     const handleStyleClick = (selectedStyle) => {
         if (setStyle) {
-            setStyle(selectedStyle.toLowerCase());
+            setStyle(selectedStyle.toLowerCase().replace(" ", "-"));
         }
     };
 
@@ -391,15 +387,8 @@ function GeneratorView({
     const showParameters = mode === 'create' || mode === 'edit';
     const showReferenceControls = mode === 'create';
 
-    const inspirationPrompts = [
-        "Retrato cyberpunk con luces de neón",
-        "Paisaje de fantasía con montañas flotantes",
-        "Logo minimalista geométrico",
-        "Ilustración 3D estilo Pixar de un robot"
-    ];
-
     const stylePills = [
-        "Cinematic", "Anime", "3D Render", "Oil Painting", "Cyberpunk", "Minimalist"
+        "Cinematic", "Anime", "3D Render", "Oil Painting", "Photorealistic", "Minimalist", "Studio Commercial"
     ];
 
     return (
@@ -460,33 +449,33 @@ function GeneratorView({
                                 <div className="prompt-helpers" style={{ marginTop: 8 }}>
                                     <div className="style-pills">
                                         <Palette size={14} style={{ color: 'var(--color-text-muted)', marginRight: 4 }} />
-                                        {stylePills.map(s => (
+                                        {stylePills.map(s => {
+                                            const formattedStyle = s.toLowerCase().replace(" ", "-");
+                                            return (
                                             <button
                                                 key={s}
-                                                className={`style-pill ${style === s.toLowerCase() ? 'active' : ''}`}
+                                                className={`style-pill ${style === formattedStyle ? 'active' : ''}`}
                                                 onClick={() => handleStyleClick(s)}
                                                 type="button"
                                                 style={{
-                                                    backgroundColor: style === s.toLowerCase() ? 'var(--color-primary)' : 'var(--bg-secondary)',
-                                                    color: style === s.toLowerCase() ? '#fff' : 'var(--color-text)',
-                                                    border: style === s.toLowerCase() ? '1px solid var(--color-primary)' : '1px solid var(--border-color)',
+                                                    backgroundColor: style === formattedStyle ? 'var(--color-primary)' : 'var(--bg-secondary)',
+                                                    color: style === formattedStyle ? '#fff' : 'var(--color-text)',
+                                                    border: style === formattedStyle ? '1px solid var(--color-primary)' : '1px solid var(--border-color)',
                                                 }}
                                             >
                                                 {s}
                                             </button>
-                                        ))}
+                                        )})}
                                     </div>
                                 </div>
 
                                 <div className="prompt-toolbar" style={{ marginTop: 10, justifyContent: 'flex-end' }}>
                                     <button
                                         className="magic-wand-btn"
-                                        onClick={handleEnhanceClick}
-                                        disabled={isEnhancing || !prompt}
-                                        title="Mejorar Prompt con IA"
+                                        onClick={onOpenWizard}
+                                        title="Sugerencias IA"
                                     >
-
-                                        {isEnhancing ? <Sparkles size={16} className="animate-spin" /> : <Wand2 size={16} />}
+                                        <Wand2 size={16} />
                                     </button>
                                 </div>
                             </div>
@@ -848,19 +837,9 @@ function GeneratorView({
                         <div className="empty-canvas">
                             <Lightbulb size={48} className="empty-icon" style={{ color: '#fbbf24', opacity: 0.8 }} />
                             <p style={{ fontWeight: 500, margin: '15px 0 10px' }}>¡Empieza a crear!</p>
-                            <p style={{ fontSize: '0.9rem', opacity: 0.7 }}>Escribe un prompt o prueba uno de estos:</p>
-
-                            <div className="inspiration-chips">
-                                {inspirationPrompts.map((p, i) => (
-                                    <button
-                                        key={i}
-                                        className="inspiration-chip"
-                                        onClick={() => setPrompt(p)}
-                                    >
-                                        {p}
-                                    </button>
-                                ))}
-                            </div>
+                            <p style={{ fontSize: '0.9rem', opacity: 0.7, marginBottom: 20 }}>
+                                Escribe un prompt o usa el botón <Wand2 size={14} style={{ verticalAlign: 'middle', marginInline: 3 }} /> para obtener sugerencias IA.
+                            </p>
                         </div>
                     )}
                 </div>
@@ -962,6 +941,90 @@ function GeneratorView({
                 message="¿Estás seguro de que deseas eliminar esta imagen? Esta acción no se puede deshacer."
                 isLoading={isDeleting}
             />
+
+            {/* AI Suggestions Wizard Modal */}
+            {wizardOpen && (
+                <div className="wizard-overlay" onClick={onCloseWizard}>
+                    <div className="wizard-modal" onClick={(e) => e.stopPropagation()}>
+                        <div className="wizard-header">
+                            <div className="wizard-title">
+                                <Sparkles size={18} style={{ color: 'var(--color-primary)' }} />
+                                <span>Sugerencias IA</span>
+                            </div>
+                            <button className="wizard-close-btn" onClick={onCloseWizard} title="Cerrar">
+                                <X size={18} />
+                            </button>
+                        </div>
+
+                        {aiRecommendedStyle && (
+                            <div className="wizard-recommendations">
+                                <span className="wizard-rec-label">Recomendado:</span>
+                                <span className="wizard-rec-chip">{aiRecommendedStyle}</span>
+                                {aspectRatio && <span className="wizard-rec-chip">{aspectRatio}</span>}
+                                {imageSize && <span className="wizard-rec-chip">{imageSize}</span>}
+                            </div>
+                        )}
+
+                        <div className="wizard-divider" />
+
+                        {loadingSuggestions ? (
+                            <div className="wizard-loading">
+                                <Sparkles size={24} className="animate-spin" style={{ color: 'var(--color-primary)' }} />
+                                <span>Analizando tu campaña...</span>
+                            </div>
+                        ) : suggestionsError ? (
+                            <div className="wizard-error">
+                                <p>{suggestionsError}</p>
+                            </div>
+                        ) : (
+                            <div className="wizard-prompts">
+                                {suggestedPrompts.map((p, i) => (
+                                    <div key={i} className="wizard-prompt-item">
+                                        <span className="wizard-prompt-number">{i + 1}.</span>
+                                        <p className="wizard-prompt-text">{p}</p>
+                                        <button
+                                            className="wizard-use-btn"
+                                            onClick={() => {
+                                                setPrompt(p);
+                                                onCloseWizard();
+                                            }}
+                                        >
+                                            Usar prompt
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        <div className="wizard-divider" />
+
+                        <div className="wizard-actions">
+                            {aiRecommendedStyle && (
+                                <button
+                                    className="wizard-action-btn wizard-apply-btn"
+                                    onClick={() => {
+                                        if (aiRecommendedStyle && setStyle) {
+                                            setStyle(aiRecommendedStyle.toLowerCase().replace(/\s+/g, '-'));
+                                        }
+                                        toast.success('Estilo y configuración aplicados', { icon: '🎨' });
+                                    }}
+                                >
+                                    <Palette size={15} />
+                                    Aplicar estilo y configuración
+                                </button>
+                            )}
+                            <button
+                                className="wizard-action-btn wizard-refresh-btn"
+                                onClick={onRefreshSuggestions}
+                                disabled={loadingSuggestions}
+                            >
+                                <Sparkles size={15} />
+                                Generar nuevas sugerencias
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

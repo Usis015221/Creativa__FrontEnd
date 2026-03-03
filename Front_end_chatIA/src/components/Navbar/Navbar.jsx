@@ -1,15 +1,16 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Logo_CS from '../../assets/img/logo_CS.png';
-import { Bell, LogOut } from 'lucide-react';
+import { Bell, LogOut, Users } from 'lucide-react';
 import ImageUser from '../ImageUser/ImageUser';
 import './Navbar.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { usePushNotifications } from '../../hooks/usePushNotifications';
 import { useAuth } from '../../hooks/useAuth';
 
 function Navbar({ role = "Marketing" }) {
     const [showMenu, setShowMenu] = useState(false);
     const { logout } = useAuth();
+    const navigate = useNavigate();
 
     const menuRef = useRef(null);
 
@@ -46,6 +47,11 @@ function Navbar({ role = "Marketing" }) {
 
     const { isSubscribed } = usePushNotifications();
 
+    const handleNavigateAdmin = () => {
+        setShowMenu(false);
+        navigate('/admin');
+    };
+
     return (
         <>
             <div className='Navbar'>
@@ -60,11 +66,19 @@ function Navbar({ role = "Marketing" }) {
                     </p>
                 </div>
 
-                <div className='user-menu-container' ref={menuRef} onClick={() => setShowMenu(!showMenu)}>
-                    <ImageUser Initials={nameUser} name="Userimg" nameContainer="imgUser" />
+                <div className='user-menu-container' ref={menuRef}>
+                    <div onClick={() => setShowMenu(!showMenu)}>
+                        <ImageUser Initials={nameUser} name="Userimg" nameContainer="imgUser" />
+                    </div>
 
                     {showMenu && (
                         <div className='profile-dropdown'>
+                            {(effectiveRole === 'marketing' || role === 'Marketing' || effectiveRole === 'admin' || role === 'Admin') && (
+                                <button onClick={handleNavigateAdmin} className='admin-btn'>
+                                    <Users size={18} />
+                                    <span>Administrar usuarios</span>
+                                </button>
+                            )}
                             <button onClick={logout} className='logout-btn'>
                                 <LogOut size={18} />
                                 <span>Cerrar sesión</span>
@@ -74,7 +88,7 @@ function Navbar({ role = "Marketing" }) {
                 </div>
             </div>
 
-            {role === 'Admin' && (
+            {(role === 'Admin' || role === 'Marketing' || effectiveRole === 'marketing' || effectiveRole === 'admin') && (
                 <div className="nav-admin-links">
                     <Link to="/admin" className="nav-link">Administrar usuarios</Link>
                     <Link to="/requests" className="nav-link">Solicitudes</Link>
