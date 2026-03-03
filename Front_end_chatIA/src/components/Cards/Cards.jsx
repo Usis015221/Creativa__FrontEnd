@@ -1,4 +1,4 @@
-import './cards.css';
+import './Cards.css';
 import { Clock, CircleUser } from 'lucide-react';
 
 function Cards(props) {
