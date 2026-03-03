@@ -99,11 +99,11 @@ function ChatPage() {
         });
     };
 
-    if (loadingDraft) return <div className="app-container"><Navbar /><div>Cargando...</div></div>;
+    if (loadingDraft) return <div className="app-container"><Navbar showAdminLinks={false} /><div>Cargando...</div></div>;
 
     return (
         <div className="app-container">
-            <Navbar />
+            <Navbar showAdminLinks={false} />
             <main className="main-layout">
                 <ChatSection onToggleSidebar={toggleSidebar} onBriefData={handleBriefData} initialMessages={initialMessages} />
                 {isSidebarOpen && <Sidebar

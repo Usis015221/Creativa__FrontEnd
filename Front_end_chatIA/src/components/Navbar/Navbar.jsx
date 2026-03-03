@@ -7,7 +7,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { usePushNotifications } from '../../hooks/usePushNotifications';
 import { useAuth } from '../../hooks/useAuth';
 
-function Navbar({ role = "Marketing" }) {
+function Navbar({ role = "Marketing", showAdminLinks = true }) {
     const [showMenu, setShowMenu] = useState(false);
     const { logout } = useAuth();
     const navigate = useNavigate();
@@ -88,7 +88,7 @@ function Navbar({ role = "Marketing" }) {
                 </div>
             </div>
 
-            {(role === 'Admin' || role === 'Marketing' || effectiveRole === 'marketing' || effectiveRole === 'admin') && (
+            {showAdminLinks && (role === 'Admin' || role === 'Marketing' || effectiveRole === 'admin' || effectiveRole === 'marketing') && (
                 <div className="nav-admin-links">
                     <Link to="/admin" className="nav-link">Administrar usuarios</Link>
                     <Link to="/requests" className="nav-link">Solicitudes</Link>
