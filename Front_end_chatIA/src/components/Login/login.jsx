@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import './Login.css';
+import './login.css';
 import { useAuth } from '../../hooks/useAuth';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
-import Logo_CS from '../../assets/img/logo_CS.png';
+import Logo_CS from '../../assets/img/Logo_CS.png';
 import FadeIn from '../../components/animations/FadeIn';
 import ScalePress from '../../components/animations/ScalePress';
 import { useNavigate } from 'react-router-dom'; // 1. Importamos useNavigate

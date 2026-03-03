@@ -1,4 +1,4 @@
-import './imageUser.css'
+import './ImageUser.css'
 import { useState } from 'react';
 import { CircleUser } from 'lucide-react';
 
