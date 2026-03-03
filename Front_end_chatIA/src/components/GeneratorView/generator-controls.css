@@ -653,6 +653,96 @@ input:checked+.slider:before {
     }
 }
 
+/* ===== AI SUGGESTIONS ===== */
+.suggestions-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-md) 0;
+}
+
+.suggestions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.suggestion-chip {
+    width: 100%;
+    text-align: left;
+    background-color: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 0.82rem;
+    line-height: 1.4;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: all 0.2s;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.suggestion-chip:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+    border-color: var(--color-primary);
+    color: var(--color-text-primary);
+}
+
+.suggestion-chip.ai-generated {
+    border-left: 3px solid var(--color-primary);
+    padding-left: 10px;
+}
+
+.suggestion-chip.ai-generated:hover {
+    border-left-color: var(--color-accent);
+}
+
+.refresh-suggestions-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    margin-top: var(--spacing-sm);
+    padding: 8px 12px;
+    background-color: transparent;
+    border: 1px dashed var(--color-border);
+    border-radius: 8px;
+    color: var(--color-text-muted);
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.refresh-suggestions-btn:hover:not(:disabled) {
+    background-color: rgba(59, 130, 246, 0.08);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    border-style: solid;
+}
+
+.refresh-suggestions-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* AI-generated inspiration chips in canvas */
+.inspiration-chip.ai-generated {
+    display: flex;
+    align-items: center;
+    border-color: rgba(59, 130, 246, 0.3);
+    background-color: rgba(59, 130, 246, 0.06);
+}
+
+.inspiration-chip.ai-generated:hover {
+    border-color: var(--color-primary);
+    background-color: rgba(59, 130, 246, 0.15);
+}
+
 /* Mobile (< 768px) */
 @media (max-width: 768px) {
     .controls-panel {
@@ -678,5 +768,10 @@ input:checked+.slider:before {
     .parameters-grid {
         grid-template-columns: 1fr 1fr;
         /* Restore 2 cols on mobile since width is 100% */
+    }
+
+    .suggestion-chip {
+        font-size: 0.78rem;
+        padding: 6px 10px;
     }
 }

@@ -39,3 +39,203 @@
     overflow: visible;
   }
 }
+/* ===== AI SUGGESTIONS WIZARD MODAL ===== */
+.wizard-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.15s ease-out;
+}
+
+.wizard-modal {
+  background: var(--bg-secondary, #1e1e2e);
+  border: 1px solid var(--border-color, rgba(255,255,255,0.1));
+  border-radius: 16px;
+  padding: 24px;
+  width: min(540px, 92vw);
+  max-height: 80vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+  animation: slideUp 0.2s ease-out;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.wizard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.wizard-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--color-text, #e0e0e0);
+}
+
+.wizard-close-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text-muted, #888);
+  padding: 4px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  transition: color 0.15s, background 0.15s;
+}
+.wizard-close-btn:hover {
+  color: var(--color-text, #e0e0e0);
+  background: rgba(255,255,255,0.06);
+}
+
+.wizard-recommendations {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.wizard-rec-label {
+  font-size: 0.8rem;
+  color: var(--color-text-muted, #888);
+}
+
+.wizard-rec-chip {
+  background: var(--color-primary-alpha, rgba(100, 108, 255, 0.15));
+  color: var(--color-primary, #6c63ff);
+  border: 1px solid var(--color-primary-alpha, rgba(100, 108, 255, 0.3));
+  border-radius: 20px;
+  padding: 3px 10px;
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+
+.wizard-divider {
+  height: 1px;
+  background: var(--border-color, rgba(255,255,255,0.08));
+  margin: 0;
+}
+
+.wizard-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 32px 0;
+  color: var(--color-text-muted, #888);
+  font-size: 0.9rem;
+}
+
+.wizard-error {
+  padding: 16px;
+  color: #ff6b6b;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.wizard-prompts {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.wizard-prompt-item {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  background: var(--bg-tertiary, rgba(255,255,255,0.04));
+  border: 1px solid var(--border-color, rgba(255,255,255,0.08));
+  border-radius: 10px;
+  padding: 12px 14px;
+  transition: border-color 0.15s;
+}
+.wizard-prompt-item:hover {
+  border-color: var(--color-primary, #6c63ff);
+}
+
+.wizard-prompt-number {
+  color: var(--color-text-muted, #888);
+  font-size: 0.85rem;
+  flex-shrink: 0;
+  padding-top: 1px;
+}
+
+.wizard-prompt-text {
+  flex: 1;
+  font-size: 0.88rem;
+  color: var(--color-text, #e0e0e0);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.wizard-use-btn {
+  flex-shrink: 0;
+  background: var(--color-primary, #6c63ff);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.15s, transform 0.1s;
+}
+.wizard-use-btn:hover {
+  opacity: 0.88;
+  transform: scale(0.98);
+}
+
+.wizard-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.wizard-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+}
+.wizard-action-btn:hover:not(:disabled) {
+  opacity: 0.88;
+  transform: scale(0.99);
+}
+.wizard-action-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.wizard-apply-btn {
+  background: var(--color-primary, #6c63ff);
+  color: #fff;
+}
+
+.wizard-refresh-btn {
+  background: var(--bg-tertiary, rgba(255,255,255,0.07));
+  color: var(--color-text, #e0e0e0);
+  border: 1px solid var(--border-color, rgba(255,255,255,0.1));
+}

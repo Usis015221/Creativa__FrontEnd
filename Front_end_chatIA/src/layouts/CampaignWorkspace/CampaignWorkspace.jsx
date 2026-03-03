@@ -1,7 +1,7 @@
 import React from 'react';
 import './CampaignWorkspace.css';
 import './ImgGenerated.css';
-import { CircleUser, Menu } from 'lucide-react';
+import { Menu } from 'lucide-react';
 import { useCampaignWorkspace } from '../../hooks/useCampaignWorkspace';
 import { useSavedAssets } from '../../hooks/useSavedAssets';
 
@@ -12,11 +12,10 @@ import ImageUser from '../../components/ImageUser/ImageUser';
 
 const CampaignWorkspace = () => {
     const userStr = localStorage.getItem('user');
-    //console.log("Usuario almacenado en localStorage:", userStr);
     const user = userStr ? JSON.parse(userStr) : null;
     let nameUser = user?.firstName || "US";
     nameUser = nameUser.substring(0, 2).toUpperCase();
-    //console.log("Iniciales del usuario para Avatar:", nameUser);
+
     const {
         // Data
         campaignData,
@@ -40,10 +39,23 @@ const CampaignWorkspace = () => {
         generatedImages, handleGenerate,
         isGenerating, generationError,
         getRefinements,
+
+        // Prompt suggestions
+        suggestedPrompts,
+        recommendedStyle,
+        loadingSuggestions,
+        suggestionsError,
+        refreshSuggestions,
+
+        // Wizard
+        wizardOpen,
+        setWizardOpen,
+        openSuggestionsWizard,
     } = useCampaignWorkspace();
 
     // Single instance of saved assets — passed as props to children (DRY)
     const { savedAssets, loading: savedLoading, toggleSaveAsset } = useSavedAssets(campaign?.id);
+
 
     return (
         <div className='cw-layout'>
@@ -56,10 +68,7 @@ const CampaignWorkspace = () => {
             {/* Sidebar */}
             <aside className={`cw-sidebar ${isSidebarOpen ? 'open' : 'closed'}`}>
                 <div className='cw-profile'>
-                    {/* <ImageUserDesinger Initials={nameUser}/> */}
                     <ImageUser Initials={nameUser} name="UserDesingerImg" nameContainer="imgUserDesinger" />
-                    {/* <CircleUser className='cw-avatar' size={80} strokeWidth={1.5} /> */}
-                    {/* <h3 className='cw-user-name'>{campaignData.designer}</h3> */}
                     <h3 className='cw-user-name'>{user.firstName + " " + user.lastName}</h3>
                 </div>
 
@@ -138,6 +147,14 @@ const CampaignWorkspace = () => {
                         getRefinements={getRefinements}
                         onDelete={handleDeleteAsset}
                         campaignId={campaign?.id}
+                        suggestedPrompts={suggestedPrompts}
+                        suggestionsError={suggestionsError}
+                        aiRecommendedStyle={recommendedStyle}
+                        loadingSuggestions={loadingSuggestions}
+                        onRefreshSuggestions={refreshSuggestions}
+                        wizardOpen={wizardOpen}
+                        onOpenWizard={openSuggestionsWizard}
+                        onCloseWizard={() => setWizardOpen(false)}
                     />
                 )}
 
@@ -150,6 +167,7 @@ const CampaignWorkspace = () => {
                         onApprove={handleApproveAsset}
                     />
                 )}
+
             </main>
         </div>
     );

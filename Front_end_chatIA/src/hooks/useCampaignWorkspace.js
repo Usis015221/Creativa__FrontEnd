@@ -53,7 +53,7 @@ export const useCampaignWorkspace = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   // --- Composed Hooks ---
-  const generatorState = useGenerator(campaign, campaignId, fetchCampaignsById, setSelectedCamp);
+  const generatorState = useGenerator(campaign, campaignId, fetchCampaignsById, setSelectedCamp, brief);
   const repositoryState = useRepository();
 
   // --- Effects ---
