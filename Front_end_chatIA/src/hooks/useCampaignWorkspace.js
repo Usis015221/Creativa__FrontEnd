@@ -4,6 +4,7 @@ import { useCampaignsContext } from "./useCampaignsContext";
 import { useCampaignsById } from "./useDesigners";
 import { useGenerator } from "./useGenerator";
 import { useRepository } from "./useRepository";
+import { useUser } from "./useUser";
 
 /**
  * Lightweight orchestrator hook for the Campaign Workspace.
@@ -14,12 +15,17 @@ export const useCampaignWorkspace = () => {
   const { selectedCamp, setSelectedCamp } = useCampaignsContext();
   const { fetchCampaignsById } = useCampaignsById();
 
+  // --- NUEVO: Obtenemos el usuario y sacamos el nombre real ---
+  const user = useUser();
+  console.log("DATOS DEL USUARIO:", user);
+  const realDesignerName = user?.firstName ? `${user.firstName} ${user.lastName}` : "Diseñador";
+
   // --- Campaign normalisation ---
   const campaign = Array.isArray(selectedCamp) ? selectedCamp[0] : selectedCamp;
   const brief = campaign?.brief_data;
 
   const defaultCampaignData = {
-    designer: "Juan Carlos",
+    designer: realDesignerName, // <--- ADIÓS JUAN CARLOS
     title: "Campaña de reclutamiento de pasantes",
     status: "En proceso",
     details: {
@@ -34,7 +40,7 @@ export const useCampaignWorkspace = () => {
 
   const campaignData = campaign
     ? {
-      designer: "Juan Carlos",
+      designer: realDesignerName, // <--- ADIÓS JUAN CARLOS
       title: brief?.nombre_campaing || "Sin título",
       status: campaign.status === "draft" ? "En Proceso" : campaign.status,
       details: {

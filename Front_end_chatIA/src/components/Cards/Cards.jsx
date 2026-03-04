@@ -1,10 +1,10 @@
 import './Cards.css';
-import { Clock, CircleUser } from 'lucide-react';
+import { Clock } from 'lucide-react';
 
 function Cards(props) {
 	var color = 'var(--color-proceso)';
 	const estado = props.estado;
-	// console.log(props) // Removed console log for cleaner code
+
 	if (estado === 'Enviado') {
 		color = 'var(--color-proceso)';
 	} else if (estado === 'Cancelado') {
@@ -15,7 +15,10 @@ function Cards(props) {
 		color = 'var(--color-rechazado)';
 	}
 
-
+	// Eliminamos la lógica del localStorage. 
+	// Ahora dependemos 100% de lo que el componente padre mande en props.usuario
+	const userName = props.usuario || 'Diseñador';
+	const initial = userName.charAt(0).toUpperCase();
 
 	return (
 		<div className="cards-container" onClick={props.onClick}>
@@ -27,8 +30,24 @@ function Cards(props) {
 					{props.estado}
 				</div>
 				<div className="fecha">
-					<CircleUser className='FotoUser' />
-					<p>{props.usuario}</p>
+					{/* AVATAR ESTILO WHATSAPP PARA LAS CARDS */}
+					<div style={{
+						width: '24px',
+						height: '24px',
+						borderRadius: '50%',
+						backgroundColor: '#00a884',
+						color: 'white',
+						display: 'flex',
+						alignItems: 'center',
+						justifyContent: 'center',
+						fontSize: '12px',
+						fontWeight: 'bold',
+						marginRight: '8px'
+					}}>
+						{initial}
+					</div>
+					{/* Renderizamos el nombre. Si no viene nada, dirá "Diseñador" */}
+
 					<p>{props.fecha}</p>
 				</div>
 			</div>

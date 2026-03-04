@@ -58,6 +58,7 @@ const CampaignWorkspace = () => {
     // Single instance of saved assets — passed as props to children (DRY)
     const { savedAssets, loading: savedLoading, toggleSaveAsset } = useSavedAssets(campaign?.id);
 
+    const designerName = campaignData.designer || `${user?.firstName || ''} ${user?.lastName || ''}`.trim() || "Diseñador";
 
     return (
         <div className='cw-layout'>
@@ -71,7 +72,7 @@ const CampaignWorkspace = () => {
             <aside className={`cw-sidebar ${isSidebarOpen ? 'open' : 'closed'}`}>
                 <div className='cw-profile'>
                     <ImageUser Initials={fullName} name="UserDesingerImg" nameContainer="imgUserDesinger" />
-                    <h3 className='cw-user-name'>{user.firstName + " " + user.lastName}</h3>
+                    <h3 className='cw-user-name'>{designerName}</h3>
                 </div>
 
                 <nav className='cw-nav-menu'>
@@ -125,7 +126,7 @@ const CampaignWorkspace = () => {
 
                 {activeTab === 'Generador' && (
                     <GeneratorView
-                        designerName={campaignData.designer}
+                        designerName={designerName}
                         prompt={prompt}
                         setPrompt={setPrompt}
                         style={style}

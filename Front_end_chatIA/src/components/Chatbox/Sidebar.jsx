@@ -93,12 +93,32 @@ const Sidebar = ({ className, onToggle, briefData = [], isRegisteredCampaign, re
       </div>
 
       <div className='box-users'>
-        {filteredDesigners.map((d) => (
-          <div className={`user-card ${selectedDesigner?.id === d.id ? 'selected' : ''}`} key={d.id} onClick={() => setSelectedDesigner(d)}>
-            <img src="https://i.pravatar.cc/150?img=11" alt="avatar" className="card-avatar" />
-            <div className="user-info"><h4>{d.first_name} {d.last_name}</h4><p>Diseñador</p></div>
-          </div>
-        ))}
+        {filteredDesigners.map((d) => {
+          // Sacamos la inicial de cada diseñador en la lista
+          const initial = d.first_name ? d.first_name.charAt(0).toUpperCase() : 'D';
+
+          return (
+            <div className={`user-card ${selectedDesigner?.id === d.id ? 'selected' : ''}`} key={d.id} onClick={() => setSelectedDesigner(d)}>
+              {/* AVATAR ESTILO WHATSAPP PARA LA LISTA */}
+              <div style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                backgroundColor: '#00a884',
+                color: 'white',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '18px',
+                fontWeight: 'bold',
+                flexShrink: 0 // Evita que el círculo se aplaste si hay poco espacio
+              }} className="card-avatar">
+                {initial}
+              </div>
+              <div className="user-info"><h4>{d.first_name} {d.last_name}</h4><p>Diseñador</p></div>
+            </div>
+          );
+        })}
       </div>
 
       <div className="send-action-area">
@@ -106,7 +126,22 @@ const Sidebar = ({ className, onToggle, briefData = [], isRegisteredCampaign, re
         <div className="recipient-tag">
           {selectedDesigner ? (
             <>
-              <img src="https://i.pravatar.cc/150?img=11" alt="u" />
+              {/* AVATAR ESTILO WHATSAPP PARA EL DISEÑADOR SELECCIONADO */}
+              <div style={{
+                width: '24px',
+                height: '24px',
+                borderRadius: '50%',
+                backgroundColor: '#00a884',
+                color: 'white',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '12px',
+                fontWeight: 'bold',
+                marginRight: '8px'
+              }}>
+                {selectedDesigner.first_name ? selectedDesigner.first_name.charAt(0).toUpperCase() : 'D'}
+              </div>
               <span>{selectedDesigner.first_name} {selectedDesigner.last_name}</span>
               <button className="close-tag" onClick={() => setSelectedDesigner(null)}><X size={14} /></button>
             </>
