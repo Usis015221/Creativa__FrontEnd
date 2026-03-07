@@ -47,6 +47,7 @@ export const useCampaignWorkspace = () => {
         objective: brief?.Objective || "No especificado",
         channel: brief?.publishing_channel || "No especificado",
         public: "General",
+        company: brief?.company || "No especificada",
         date: brief?.fechaPublicacion || "No especificada",
         description: brief?.Description || "Sin descripción",
       },
