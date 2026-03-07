@@ -91,7 +91,7 @@ export const editImage = async (editData) => {
       maskImage: editData.maskImage || null,
       campaignId: editData.campaignId,
       style: editData.style,
-      logo: editData.logoRatio || "Ninguno",
+      logo: editData.logo || "Ninguno",
       config: editData.config || {},
     };
 

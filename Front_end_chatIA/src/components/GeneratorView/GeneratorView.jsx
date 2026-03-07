@@ -589,7 +589,7 @@ function GeneratorView({
                                         </div>
                                         {/* Uso de logos especificos para las imagenes */}
                                         <div className="control-group" style={{ gridColumn: 'span 2' }}>
-                                            <label style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>Formato</label>
+                                            <label style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>Logo</label>
                                             <div className="aspect-ratio-selector">
                                                 
                                                 <button
