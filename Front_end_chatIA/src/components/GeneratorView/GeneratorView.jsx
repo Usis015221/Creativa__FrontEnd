@@ -343,6 +343,7 @@ function GeneratorView({
                         prompt,
                         baseImageURL,
                         maskImage,
+                        logoRatio,
                         campaignId,
                         style
                     });
@@ -351,6 +352,7 @@ function GeneratorView({
                     result = await refineAsset([assetId], baseImageURL, prompt, {
                         style,
                         aspectRatio,
+                        logoRatio,
                         campaignId
                     });
                 }

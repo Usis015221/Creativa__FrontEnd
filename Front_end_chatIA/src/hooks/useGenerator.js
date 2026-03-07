@@ -178,6 +178,7 @@ export function useGenerator(campaign, campaignId, fetchCampaignsById, setSelect
                 quantity,
                 useReference,
                 referenceImages,
+                logoRatio,
                 campaignId: campaign.id,
             });
 

@@ -34,11 +34,13 @@ export const buildPrompt = async (briefData) => {
  */
 export const generateImages = async (config) => {
   try {
+   
     const payload = {
       prompt: config.prompt,
       numberOfImages: config.quantity || 1,
       campaignId: config.campaignId,
       style: config.style || "cinematic",
+      logo: config.logoRatio || "Ninguno",
       imageConfig: {
         aspectRatio: config.aspectRatio || "1:1",
         imageSize: config.imageSize || "2K",
@@ -89,6 +91,7 @@ export const editImage = async (editData) => {
       maskImage: editData.maskImage || null,
       campaignId: editData.campaignId,
       style: editData.style,
+      logo: editData.logoRatio || "Ninguno",
       config: editData.config || {},
     };
 
@@ -123,6 +126,7 @@ export const refineAsset = async (assetIds, baseImageURL, refinementPrompt, opti
           prompt: refinementPrompt,
           maskImage: null, // No mask = full image refinement
           style: options.style,
+          logo: options.logoRatio,
           campaignId: options.campaignId,
           config: options.aspectRatio ? { aspectRatio: options.aspectRatio } : {},
         }),
