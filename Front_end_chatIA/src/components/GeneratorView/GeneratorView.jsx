@@ -603,7 +603,7 @@ function GeneratorView({
                                                     onClick={() => setlogo('Creativa')}
                                                     title="Logo de Creativa"
                                                 >
-                                                    <img src={logoVS} className='company_logo' alt="Creativa logo" />
+                                                    <img src={creativaLogo} className='company_logo' alt="Creativa logo" />
                                                     <span className="ratio-label">Creativa</span>
                                                 </button>
                                                 <button
@@ -611,7 +611,7 @@ function GeneratorView({
                                                     onClick={() => setlogo('Visible')}
                                                     title="Logo de Visible"
                                                 >
-                                                    <img src={creativaLogo} className='company_logo' alt="Creativa logo" />
+                                                    <img src={logoVS} className='company_logo' alt="Creativa logo" />
                                                     <span className="ratio-label">Visible</span>
                                                 </button>
                                             </div>
