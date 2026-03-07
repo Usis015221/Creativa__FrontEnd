@@ -21,6 +21,7 @@ export function useGenerator(campaign, campaignId, fetchCampaignsById, setSelect
     const [style, setStyle] = useState("cinematic");
     const [useReference, setUseReference] = useState(true);
     const [aspectRatio, setAspectRatio] = useState("1:1");
+    const [logoRatio, setlogo] = useState("Ninguno");
     const [imageSize, setImageSize] = useState("2K");
     const [quantity, setQuantity] = useState(1);
     const [generatedImages, setGeneratedImages] = useState([]);
@@ -216,6 +217,8 @@ export function useGenerator(campaign, campaignId, fetchCampaignsById, setSelect
         setUseReference,
         aspectRatio,
         setAspectRatio,
+        logoRatio,
+        setlogo,
         imageSize,
         setImageSize,
         quantity,

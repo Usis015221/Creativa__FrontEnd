@@ -206,6 +206,10 @@
   flex-direction: column;
   gap: 8px;
 }
+.company_logo{
+  max-width: 70%;
+  max-height: 50%;
+}
 
 .wizard-action-btn {
   display: flex;

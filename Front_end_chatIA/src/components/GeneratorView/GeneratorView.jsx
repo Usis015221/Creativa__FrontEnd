@@ -8,6 +8,9 @@ import LoadingSpinner from '../animations/LoadingSpinner';
 import ScanningPlaceholder from '../animations/ScanningPlaceholder';
 import ConfirmationModal from '../Modals/ConfirmationModal';
 import './GeneratorView.css';
+import creativaLogo from '../../assets/img/gg.png'
+import logoCS from '../../assets/img/Logo_CS.png'
+import logoVS from '../../assets/img/Logo_vs.png'
 
 const ReferenceImagesStrip = ({ images, onDeselect }) => {
     if (!images || !Array.isArray(images) || images.length === 0) return null;
@@ -61,6 +64,8 @@ function GeneratorView({
     setUseReference,
     aspectRatio,
     setAspectRatio,
+    setlogo,
+    logoRatio,
     imageSize,
     setImageSize,
     quantity,
@@ -537,6 +542,7 @@ function GeneratorView({
                                         <div className="control-group" style={{ gridColumn: 'span 2' }}>
                                             <label style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>Formato</label>
                                             <div className="aspect-ratio-selector">
+                                                
                                                 <button
                                                     className={`ratio-btn ${aspectRatio === '1:1' ? 'active' : ''}`}
                                                     onClick={() => setAspectRatio('1:1')}
@@ -573,9 +579,42 @@ function GeneratorView({
                                                 style={{ width: '100%', cursor: 'pointer' }}
                                                 title="Resolución de la imagen generada"
                                             >
+                                                <option value="1080x1080">1080x1080 (Recomendado)</option>
+                                                <option value="1080x1920">1080x1920 (Recomendado 9:16)</option>
                                                 <option value="2K">2K (Estándar)</option>
                                                 <option value="4K">4K (Alta calidad)</option>
                                             </select>
+                                        </div>
+                                        {/* Uso de logos especificos para las imagenes */}
+                                        <div className="control-group" style={{ gridColumn: 'span 2' }}>
+                                            <label style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>Formato</label>
+                                            <div className="aspect-ratio-selector">
+                                                
+                                                <button
+                                                    className={`ratio-btn ${logoRatio === 'Ninguno' ? 'active' : ''}`}
+                                                    onClick={() => setlogo('Ninguno')}
+                                                    title="Ningun logo"
+                                                >
+                                                    <img src={logoCS} className='company_logo' alt="Creativa logo" />
+                                                    <span className="ratio-label">Ninguno</span>
+                                                </button>
+                                                <button
+                                                    className={`ratio-btn ${logoRatio === 'Creativa' ? 'active' : ''}`}
+                                                    onClick={() => setlogo('Creativa')}
+                                                    title="Logo de Creativa"
+                                                >
+                                                    <img src={logoVS} className='company_logo' alt="Creativa logo" />
+                                                    <span className="ratio-label">Creativa</span>
+                                                </button>
+                                                <button
+                                                    className={`ratio-btn ${logoRatio === 'Visible' ? 'active' : ''}`}
+                                                    onClick={() => setlogo('Visible')}
+                                                    title="Logo de Visible"
+                                                >
+                                                    <img src={creativaLogo} className='company_logo' alt="Creativa logo" />
+                                                    <span className="ratio-label">Visible</span>
+                                                </button>
+                                            </div>
                                         </div>
 
                                         {mode === 'create' && (

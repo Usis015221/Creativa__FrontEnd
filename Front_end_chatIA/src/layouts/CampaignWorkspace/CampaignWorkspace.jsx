@@ -36,6 +36,7 @@ const CampaignWorkspace = () => {
         style, setStyle,
         useReference, setUseReference,
         aspectRatio, setAspectRatio,
+        logoRatio, setlogo,
         imageSize, setImageSize,
         quantity, setQuantity,
         generatedImages, handleGenerate,
@@ -135,6 +136,8 @@ const CampaignWorkspace = () => {
                         setUseReference={setUseReference}
                         aspectRatio={aspectRatio}
                         setAspectRatio={setAspectRatio}
+                        setlogo={setlogo}
+                        logoRatio={logoRatio}
                         imageSize={imageSize}
                         setImageSize={setImageSize}
                         quantity={quantity}
