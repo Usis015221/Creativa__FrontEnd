@@ -21,8 +21,13 @@ const RoleRoute = ({ allowedRoles }) => {
     }
 
     // Check if user's role is in the allowed roles
-    if (allowedRoles && !allowedRoles.includes(user.role)) {
-        return <AccessDenied />
+    if (allowedRoles) {
+        const normalizedUserRole = (user?.role || '').toLowerCase().trim();
+        const normalizedAllowedRoles = allowedRoles.map(r => r.toLowerCase().trim());
+
+        if (!normalizedAllowedRoles.includes(normalizedUserRole)) {
+            return <AccessDenied />
+        }
     }
 
     // Render protected content if user has the correct role

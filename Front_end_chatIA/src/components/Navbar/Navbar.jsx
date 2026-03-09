@@ -42,8 +42,6 @@ function Navbar({ role = "Marketing", showAdminLinks = true }) {
     let logoPath = '/';
     if (effectiveRole === 'designer' || effectiveRole === 'diseñador') {
         logoPath = '/designer';
-    } else if (effectiveRole === 'admin') {
-        logoPath = '/admin';
     } else {
         logoPath = '/';
     }

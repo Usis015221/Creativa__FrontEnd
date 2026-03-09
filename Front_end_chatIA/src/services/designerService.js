@@ -56,12 +56,25 @@ export const updateCampaignStatus = async (campaignId, status) => {
 };
 
 export const getCampaignById = async (campaignId) => {
-  const user = localStorage.getItem("user");
-  const userId = JSON.parse(user).id;
+  const userStr = localStorage.getItem("user");
+  const user = JSON.parse(userStr);
+  const userId = user.id;
+  
+  // Extraemos el rol de forma segura
+  const rawRole = user.role || user.user_metadata?.role || '';
+  const role = String(rawRole).toLowerCase().trim();
+
   try {
-    const response = await api.get("/campaigns/campaignById", {
-      params: { campaignId, designerId: userId },
-    });
+    // Parámetros base
+    const params = { campaignId };
+
+    // SOLO enviamos el designerId si el rol es diseñador. 
+    // De esta forma, Marketing no será filtrado ni excluido por la base de datos.
+    if (role === 'designer' || role === 'diseñador') {
+      params.designerId = userId;
+    }
+
+    const response = await api.get("/campaigns/campaignById", { params });
 
     return response.data.data;
   } catch (e) {
