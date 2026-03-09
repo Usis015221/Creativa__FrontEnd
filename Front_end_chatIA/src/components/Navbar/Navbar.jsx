@@ -30,20 +30,19 @@ function Navbar({ role = "Marketing", showAdminLinks = true }) {
 
     const userStr = localStorage.getItem('user');
     const user = userStr ? JSON.parse(userStr) : null;
-    const rol = user?.role;
-    //console.log("usuario en Navbar:", user.firstName);
+
+    const rawRole = user?.role || user?.user_metadata?.role || '';
+    const dbRole = String(rawRole).toLowerCase().trim();
+
     let nameUser = user?.firstName || "US";
     let lastName = user?.lastName || " ";
     nameUser = nameUser.substring(0, 1).toUpperCase();
     lastName = lastName.substring(0, 1).toUpperCase();
     let fullName = nameUser + lastName;
 
-    const effectiveRole = (role || rol || '').toString().toLowerCase();
     let logoPath = '/';
-    if (effectiveRole === 'designer' || effectiveRole === 'diseñador') {
+    if (dbRole === 'designer' || dbRole === 'diseñador') {
         logoPath = '/designer';
-    } else if (effectiveRole === 'admin') {
-        logoPath = '/admin';
     } else {
         logoPath = '/';
     }
@@ -65,7 +64,7 @@ function Navbar({ role = "Marketing", showAdminLinks = true }) {
                 <div className='Notification'>
                     <Bell size={24} className={isSubscribed ? 'campana campana--active' : 'campana'} />
                     <p className='textNotification'>
-                        {rol ? (rol.charAt(0).toUpperCase() + rol.slice(1)) : role}
+                        {rawRole ? (rawRole.charAt(0).toUpperCase() + rawRole.slice(1)) : role}
                     </p>
                 </div>
 
@@ -76,7 +75,7 @@ function Navbar({ role = "Marketing", showAdminLinks = true }) {
 
                     {showMenu && (
                         <div className='profile-dropdown'>
-                            {(effectiveRole === 'marketing' || role === 'Marketing' || effectiveRole === 'admin' || role === 'Admin') && (
+                            {(dbRole === 'marketing' || dbRole === 'admin') && (
                                 <button onClick={handleNavigateAdmin} className='admin-btn'>
                                     <Users size={18} />
                                     <span>Administrar usuarios</span>
@@ -91,7 +90,7 @@ function Navbar({ role = "Marketing", showAdminLinks = true }) {
                 </div>
             </div>
 
-            {showAdminLinks && (role === 'Admin' || role === 'Marketing' || effectiveRole === 'admin' || effectiveRole === 'marketing') && (
+            {showAdminLinks && (dbRole === 'admin' || dbRole === 'marketing') && (
                 <div className="nav-admin-links">
                     <Link to="/admin" className="nav-link">Administrar usuarios</Link>
                     <Link to="/requests" className="nav-link">Solicitudes</Link>

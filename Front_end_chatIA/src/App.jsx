@@ -94,16 +94,19 @@ const AnimatedRoutes = () => {
           </Route>
 
           {/* Designer Routes */}
-          <Route element={<RoleRoute allowedRoles={['designer']} />}>
+          <Route element={<RoleRoute allowedRoles={['designer', 'diseñador']} />}>
             <Route path="/designer" element={
               <PageTransition>
                 <Navbar role='Diseñador' />
                 <ViewAssignmentsDesigner />
               </PageTransition>
             } />
+          </Route>
+
+          <Route element={<RoleRoute allowedRoles={['designer', 'diseñador', 'marketing']} />}>
             <Route path="/designer/workspace/:campaignId" element={
               <PageTransition>
-                <Navbar role='Diseñador' />
+                <Navbar role='Workspace IA' />
                 <CampaignWorkspace />
               </PageTransition>
             } />
