@@ -21,7 +21,8 @@ export function useGenerator(campaign, campaignId, fetchCampaignsById, setSelect
     const [style, setStyle] = useState("cinematic");
     const [useReference, setUseReference] = useState(true);
     const [aspectRatio, setAspectRatio] = useState("1:1");
-    const [logoRatio, setlogo] = useState("Ninguno");
+    // --- CAMBIO V2.0: Estandarizado a logoType ---
+    const [logoType, setLogoType] = useState("Ninguno"); 
     const [imageSize, setImageSize] = useState("2K");
     const [quantity, setQuantity] = useState(1);
     const [generatedImages, setGeneratedImages] = useState([]);
@@ -175,10 +176,13 @@ export function useGenerator(campaign, campaignId, fetchCampaignsById, setSelect
                 style,
                 aspectRatio,
                 imageSize,
+                // --- CAMBIO V2.0: Pasamos los nombres correctos al servicio ---
+                resolution: imageSize, 
+                logoType, 
+                // --------------------------------------------------------------
                 quantity,
                 useReference,
                 referenceImages,
-                logoRatio,
                 campaignId: campaign.id,
             });
 
@@ -218,8 +222,10 @@ export function useGenerator(campaign, campaignId, fetchCampaignsById, setSelect
         setUseReference,
         aspectRatio,
         setAspectRatio,
-        logoRatio,
-        setlogo,
+        // --- CAMBIO V2.0 ---
+        logoType,
+        setLogoType,
+        // -------------------
         imageSize,
         setImageSize,
         quantity,

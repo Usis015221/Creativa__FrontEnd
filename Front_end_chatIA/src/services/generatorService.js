@@ -40,7 +40,10 @@ export const generateImages = async (config) => {
       numberOfImages: config.quantity || 1,
       campaignId: config.campaignId,
       style: config.style || "cinematic",
-      logo: config.logoRatio || "Ninguno",
+      // --- CAMBIO V2.0: Usamos logoType y resolution en el JSON que va al backend ---
+      logoType: config.logoType || "Ninguno",
+      resolution: config.resolution || "1080x1080",
+      // -----------------------------------------------------------------------------
       imageConfig: {
         aspectRatio: config.aspectRatio || "1:1",
         imageSize: config.imageSize || "2K",
@@ -75,8 +78,8 @@ export const generateImages = async (config) => {
 /**
  * Edit an image using inpainting or refinement.
  * Supports both:
- *   - Inpainting: sends assetId + maskImage + prompt
- *   - Refinement: sends assetId + prompt (no mask)
+ * - Inpainting: sends assetId + maskImage + prompt
+ * - Refinement: sends assetId + prompt (no mask)
  *
  * Backend resolves assetId → URL internally.
  * Returns [{ id, img_url, prompt_used, campaign_id, status, parent_asset_id }]
@@ -91,7 +94,8 @@ export const editImage = async (editData) => {
       maskImage: editData.maskImage || null,
       campaignId: editData.campaignId,
       style: editData.style,
-      logo: editData.logo || "Ninguno",
+      // --- CAMBIO V2.0: Estandarizado a logoType para el endpoint de edición también ---
+      logoType: editData.logoType || "Ninguno",
       config: editData.config || {},
     };
 
@@ -109,8 +113,7 @@ export const editImage = async (editData) => {
 
 /**
  * Refine existing assets — uses the same /image/edit endpoint without a mask.
- * 
- * @param {Array<string>} assetIds - IDs of assets to refine
+ * * @param {Array<string>} assetIds - IDs of assets to refine
  * @param {string} refinementPrompt - Instructions for refinement
  * @param {Object} options - Additional options (style, aspectRatio, campaignId)
  * @returns {Promise<Array>} Array of refined asset objects
@@ -126,7 +129,8 @@ export const refineAsset = async (assetIds, baseImageURL, refinementPrompt, opti
           prompt: refinementPrompt,
           maskImage: null, // No mask = full image refinement
           style: options.style,
-          logo: options.logoRatio,
+          // --- CAMBIO V2.0: Usamos logoType aquí también ---
+          logoType: options.logoType, 
           campaignId: options.campaignId,
           config: options.aspectRatio ? { aspectRatio: options.aspectRatio } : {},
         }),

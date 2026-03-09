@@ -64,8 +64,8 @@ function GeneratorView({
     setUseReference,
     aspectRatio,
     setAspectRatio,
-    setlogo,
-    logoRatio,
+    setLogoType, // <-- CAMBIO V2.0
+    logoType,    // <-- CAMBIO V2.0
     imageSize,
     setImageSize,
     quantity,
@@ -212,8 +212,6 @@ function GeneratorView({
         }
     };
 
-    // START: Concat previous parts if needed, but here is the new Delete Logic
-    // START: Concat previous parts if needed, but here is the new Delete Logic
     const handleDeleteClick = (imgToDelete) => {
         setAssetToDelete(imgToDelete);
         setDeleteModalOpen(true);
@@ -242,7 +240,6 @@ function GeneratorView({
             }
 
             setDeleteModalOpen(false);
-            setDeleteModalOpen(false);
             setAssetToDelete(null);
             toast.success('Imagen eliminada', {
                 icon: <CheckCircle size={20} color="var(--color-success)" />
@@ -263,8 +260,6 @@ function GeneratorView({
         setDeleteModalOpen(false);
         setAssetToDelete(null);
     };
-
-    // ... (useEffect, displayImages, mode handlers) ...
 
     useEffect(() => {
         setLocalImages(generatedImages);
@@ -329,11 +324,6 @@ function GeneratorView({
                 }
 
                 let result;
-                // If we have strokes, use Inpainting (editImage)
-                // We check if canvasRef has strokes. If not, maybe falback to simple refine?
-                // For now, if in edit mode, we assume inpainting if mask is generated.
-                // But the user might just want to use the prompt without mask (pure refine).
-                // Let's check if there are strokes.
                 const hasStrokes = canvasRef.current && canvasRef.current.hasStrokes();
 
                 if (hasStrokes) {
@@ -343,7 +333,7 @@ function GeneratorView({
                         prompt,
                         baseImageURL,
                         maskImage,
-                        logoRatio,
+                        logoType, // <-- CAMBIO V2.0
                         campaignId,
                         style
                     });
@@ -352,7 +342,7 @@ function GeneratorView({
                     result = await refineAsset([assetId], baseImageURL, prompt, {
                         style,
                         aspectRatio,
-                        logoRatio,
+                        logoType, // <-- CAMBIO V2.0
                         campaignId
                     });
                 }
@@ -593,24 +583,24 @@ function GeneratorView({
                                             <div className="aspect-ratio-selector">
                                                 
                                                 <button
-                                                    className={`ratio-btn ${logoRatio === 'Ninguno' ? 'active' : ''}`}
-                                                    onClick={() => setlogo('Ninguno')}
+                                                    className={`ratio-btn ${logoType === 'Ninguno' ? 'active' : ''}`} // <-- CAMBIO V2.0
+                                                    onClick={() => setLogoType('Ninguno')}                            // <-- CAMBIO V2.0
                                                     title="Ningun logo"
                                                 >
                                                     <img src={logoCS} className='company_logo' alt="Creativa logo" />
                                                     <span className="ratio-label">Ninguno</span>
                                                 </button>
                                                 <button
-                                                    className={`ratio-btn ${logoRatio === 'Creativa' ? 'active' : ''}`}
-                                                    onClick={() => setlogo('Creativa')}
+                                                    className={`ratio-btn ${logoType === 'Creativa' ? 'active' : ''}`} // <-- CAMBIO V2.0
+                                                    onClick={() => setLogoType('Creativa')}                            // <-- CAMBIO V2.0
                                                     title="Logo de Creativa"
                                                 >
                                                     <img src={creativaLogo} className='company_logo' alt="Creativa logo" />
                                                     <span className="ratio-label">Creativa</span>
                                                 </button>
                                                 <button
-                                                    className={`ratio-btn ${logoRatio === 'Visible' ? 'active' : ''}`}
-                                                    onClick={() => setlogo('Visible')}
+                                                    className={`ratio-btn ${logoType === 'Visible' ? 'active' : ''}`} // <-- CAMBIO V2.0
+                                                    onClick={() => setLogoType('Visible')}                            // <-- CAMBIO V2.0
                                                     title="Logo de Visible"
                                                 >
                                                     <img src={logoVS} className='company_logo' alt="Creativa logo" />
