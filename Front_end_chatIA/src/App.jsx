@@ -106,7 +106,7 @@ const AnimatedRoutes = () => {
           <Route element={<RoleRoute allowedRoles={['designer', 'diseñador', 'marketing']} />}>
             <Route path="/designer/workspace/:campaignId" element={
               <PageTransition>
-                <Navbar role='Workspace IA' />
+                <Navbar role='Workspace IA' showAdminLinks={false} />
                 <CampaignWorkspace />
               </PageTransition>
             } />
