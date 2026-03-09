@@ -13,6 +13,7 @@ export const REQUIRED_FIELDS = [
   "Description",
   "Objective",
   "publishing_channel",
+  "company",
   "fechaPublicacion",
 ];
 
@@ -26,6 +27,7 @@ export const LABEL_TRANSLATIONS = {
   Objective: "Objetivo",
   observations: "Observaciones",
   publishing_channel: "Canal de publicación",
+  company: "Empresa dueña de la campaña",
   fechaPublicacion: "Fecha de publicación",
 };
 
