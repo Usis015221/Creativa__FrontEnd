@@ -149,12 +149,22 @@ export function useGenerator(campaign, campaignId, fetchCampaignsById, setSelect
     }, [campaignId]);
 
     // --- Get refinements (children) for a parent asset ---
-    const getRefinements = useCallback((parentId) => {
-        if (!campaign?.assets) return [];
-        return campaign.assets.filter(
-            (asset) => asset.parent_asset_id === parentId,
-        );
-    }, [campaign]);
+    const getRefinements = useCallback(async (parentId) => {
+        try {
+            // Consultamos directamente a la BD para tener siempre las iteraciones más recientes
+            const allAssets = await getAllAssets(campaignId);
+            return allAssets.filter(
+                (asset) => asset.parent_asset_id === parentId
+            );
+        } catch (error) {
+            console.error("Error fetching refinements:", error);
+            // Fallback de seguridad al contexto por si algo falla
+            if (!campaign?.assets) return [];
+            return campaign.assets.filter(
+                (asset) => asset.parent_asset_id === parentId,
+            );
+        }
+    }, [campaignId, campaign]);
 
     // --- Generate images ---
     const handleGenerate = async (referenceImages = []) => {

@@ -78,7 +78,7 @@ function GeneratorView({
     onToggleSaveAsset,      // Received from parent
     isGenerating = false,
     generationError = null,
-    getRefinements = () => [],
+    getRefinements = async () => [],
     onDelete,
     campaignId,
     suggestedPrompts = [],
@@ -272,24 +272,29 @@ function GeneratorView({
     const textareaRef = useRef(null);
 
     // ===== MODE HANDLERS =====
-    const enterEditMode = (image) => {
+    const enterEditMode = async (image) => {
         setMode('edit');
         setEditingImage(image);
-
-        // Populate history with Parent + Children (Refinements)
-        const refinements = getRefinements(image.id);
-        if (refinements && refinements.length > 0) {
-            setEditHistory([image, ...refinements]);
-        } else {
-            setEditHistory([image]);
-        }
-
         setPrompt('');
 
+        // 1. Mostrar la imagen original inmediatamente para dar una respuesta rápida en la UI
+        setEditHistory([image]);
+        
         setShowEditOverlay(true);
         setTimeout(() => {
             setShowEditOverlay(false);
         }, 1500);
+
+        // 2. Cargar asíncronamente TODAS las iteraciones desde la BD
+        try {
+            const refinements = await getRefinements(image.id);
+            if (refinements && refinements.length > 0) {
+                // Actualizamos la cinta de historial agregando las iteraciones encontradas
+                setEditHistory([image, ...refinements]);
+            }
+        } catch (error) {
+            console.error("Error al cargar el historial de edición:", error);
+        }
     };
 
     const exitEditMode = () => {
